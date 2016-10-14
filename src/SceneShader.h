@@ -44,13 +44,7 @@ public:
 	void updateLightPositionY( float y );
 	void updateLightPositionZ( float z );
 
-	float b = 0.4;
-	float y = 0.4;
-	float alpha = 0.2;
-	float beta = 0.6;
-	float rc = 0.0;
-	float gc = 1.0;
-	float bc = 0.0;
+	float r = 0.4;
 	
 private:
 

@@ -53,9 +53,9 @@ void keyboard( unsigned char key, int x, int y )
 			break;			
 		case (GLFW_KEY_1):
 		case (GLFW_KEY_2):
-			value = shader.b;	// initialize to shader value 
+			value = shader.r;	// initialize to shader value 
 			break;
-		case (GLFW_KEY_3):
+/*		case (GLFW_KEY_3):
 		case (GLFW_KEY_4):
 			value = shader.y;
 			break;
@@ -78,7 +78,7 @@ void keyboard( unsigned char key, int x, int y )
 		case (GLFW_KEY_O):
 		case (GLFW_KEY_P):
 			value = shader.gc;
-			break;
+			break;*/
 		default:
 			break;
 	}
@@ -106,10 +106,10 @@ void keyboard( unsigned char key, int x, int y )
 	{	
 		case (GLFW_KEY_1):
 		case (GLFW_KEY_2):
-			shader.b = value;
-			printf("b value: %f\n", shader.b);
+			shader.r = value;
+			printf("r value: %f\n", shader.r);
 			break;
-		case (GLFW_KEY_3):
+		/*case (GLFW_KEY_3):
 		case (GLFW_KEY_4):
 			shader.y = value;
 			printf("y value: %f\n", shader.y);
@@ -138,7 +138,7 @@ void keyboard( unsigned char key, int x, int y )
 		case (GLFW_KEY_P):
 			shader.gc = value;
 			printf("gc value: %f\n", shader.gc);
-			break;
+			break;*/
 		default:
 			break;	
 	}

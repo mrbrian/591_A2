@@ -72,7 +72,7 @@ void SceneShader::createVertexBuffer()
 	//read and create mesh geometry
 	readMesh("./models/bunny.ply"); //normalized vertices coordinates
 
-	std::string imageFilename("textures/grey.png");
+	std::string imageFilename("textures/red.png");
 	//loading image
 	unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, imageFilename.c_str());
 
@@ -174,13 +174,7 @@ void SceneShader::renderMesh()
         _modelview *=  rotationX;
 
 	//uniform variables
-	glUniform1f(glGetUniformLocation(_programMesh, "b"), b);
-	glUniform1f(glGetUniformLocation(_programMesh, "y"), y);
-	glUniform1f(glGetUniformLocation(_programMesh, "alpha"), alpha);
-	glUniform1f(glGetUniformLocation(_programMesh, "beta"), beta);
-	glUniform1f(glGetUniformLocation(_programMesh, "rc"), rc);
-	glUniform1f(glGetUniformLocation(_programMesh, "gc"), bc);
-	glUniform1f(glGetUniformLocation(_programMesh, "bc"), gc);
+	glUniform1f(glGetUniformLocation(_programMesh, "r"), r);
 	glUniformMatrix4fv(glGetUniformLocation(_programMesh, "modelview"), 1, GL_FALSE, glm::value_ptr(_modelview));
 	glUniformMatrix4fv(glGetUniformLocation(_programMesh, "projection"), 1, GL_FALSE, glm::value_ptr(_projection));
 
