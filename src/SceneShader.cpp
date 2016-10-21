@@ -72,11 +72,11 @@ void SceneShader::createVertexBuffer()
 	//read and create mesh geometry
 	readMesh("./models/bunny.ply"); //normalized vertices coordinates
 
-	std::string imageFilename("textures/red.png");
+    std::string imageFilename("textures-256-256/silh-bcklig-fig10/fig-10d.png");
 	//loading image
 	unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, imageFilename.c_str());
 
-	if (error) 
+    if (error)
 		std::cout << "error " << error << ":" << lodepng_error_text(error) << std::endl;
 
     //creating 2D texture
@@ -156,7 +156,8 @@ void SceneShader::renderMesh()
 
 	glUseProgram(_programMesh);
 	
-	_texture.bind2DTexture(_programMesh, _texture2Did, std::string("image"));
+	glBindTexture(_programMesh, _texture2Did);
+	//_texture.bind2DTexture(_programMesh, _texture2Did, std::string("image"));
 
 	//scene matrices and camera setup
 	glm::vec3 eye(0.0f, 0.3f, 2.0f);
@@ -182,7 +183,7 @@ void SceneShader::renderMesh()
 
 	glDrawElements( GL_TRIANGLES, _mesh->faces.size()*3, GL_UNSIGNED_INT, 0 );
 	
-	_texture.unbind2DTexture();
+	glBindTexture(_programMesh, 0);
 
 	glBindVertexArray(0);
 }
