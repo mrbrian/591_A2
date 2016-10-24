@@ -43,9 +43,52 @@ void SceneShader::readMesh( std::string filename )
 	}
 }
 
+void SceneShader::updateTexture( std::string texture_name )
+{
+    printf("texture_name value: %s\n", texture_name.c_str());
 
+    std::string imageFilename(texture_name);
+    //loading image
+    _image.clear();
+    unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, imageFilename.c_str());
 
-void SceneShader::createVertexBuffer()
+    if (error)
+        std::cout << "error " << error << ":" << lodepng_error_text(error) << std::endl;
+
+    //creating 2D texture
+    _texture2Did = _texture.create2DTexture(_image, _imageWidth, _imageHeight);
+    _texture.unbind2DTexture();
+}
+
+void SceneShader::updateModel( std::string model_name )
+{
+    //read and create mesh geometry
+    readMesh(model_name); //normalized vertices coordinates
+
+    //triangle mesh
+    glGenVertexArrays(1, &_meshVertexArray);
+    glBindVertexArray(_meshVertexArray);
+
+    glGenBuffers(1, &_meshVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _meshVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER,  _mesh->vertices.size() * sizeof (trimesh::point), _mesh->vertices.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(0);
+
+    glGenBuffers(1, &_meshNormalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _meshNormalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, _mesh->normals.size() * sizeof(trimesh::vec), _mesh->normals.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(1);
+
+    glGenBuffers(1, &_meshIndicesBuffer );
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _meshIndicesBuffer );
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _triangleIndices.size()*sizeof(unsigned int), _triangleIndices.data(), GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
+}
+
+void SceneShader::createVertexBuffer( std::string model_name, std::string texture_name )
 {
 	//create plane geometry
 	static const GLfloat quadData[] =
@@ -70,44 +113,12 @@ void SceneShader::createVertexBuffer()
 	glBindVertexArray(0);
 
 	//read and create mesh geometry
-	readMesh("./models/bunny.ply"); //normalized vertices coordinates
-
-    std::string imageFilename("textures-256-256/silh-bcklig-fig10/fig-10d.png");
-	//loading image
-	unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, imageFilename.c_str());
-
-    if (error)
-		std::cout << "error " << error << ":" << lodepng_error_text(error) << std::endl;
-
-    //creating 2D texture
-    _texture2Did = _texture.create2DTexture(_image, _imageWidth, _imageHeight);
-
-	//triangle mesh
-	glGenVertexArrays(1, &_meshVertexArray);
-	glBindVertexArray(_meshVertexArray);
-
-	glGenBuffers(1, &_meshVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, _meshVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER,  _mesh->vertices.size() * sizeof (trimesh::point), _mesh->vertices.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(0);
-
-	glGenBuffers(1, &_meshNormalBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, _meshNormalBuffer);
-	glBufferData(GL_ARRAY_BUFFER, _mesh->normals.size() * sizeof(trimesh::vec), _mesh->normals.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(1);
-
-	glGenBuffers(1, &_meshIndicesBuffer );
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _meshIndicesBuffer );
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _triangleIndices.size()*sizeof(unsigned int), _triangleIndices.data(), GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
-
+    updateModel(model_name); //normalized vertices coordinates
+    updateTexture(texture_name);
 }
 
 
-void SceneShader::startup()
+void SceneShader::startup(std::string model, std::string texture)
 {
 	_programPlane = compile_shaders("./shaders/plane.vert", "./shaders/plane.frag");
 
@@ -115,7 +126,7 @@ void SceneShader::startup()
 
 	_programLight = compile_shaders("./shaders/light.vert", "./shaders/light.frag");
 	
-	createVertexBuffer();
+    createVertexBuffer(model, texture);
 
 }
 
@@ -155,9 +166,10 @@ void SceneShader::renderMesh()
 	glBindVertexArray(_meshVertexArray);
 
 	glUseProgram(_programMesh);
-	
-	glBindTexture(_programMesh, _texture2Did);
-	//_texture.bind2DTexture(_programMesh, _texture2Did, std::string("image"));
+
+    _texture.bind2DTexture(_programMesh, _texture2Did, std::string("image"));
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	//scene matrices and camera setup
 	glm::vec3 eye(0.0f, 0.3f, 2.0f);
@@ -172,7 +184,7 @@ void SceneShader::renderMesh()
 
 	glm::mat4 rotationX = glm::rotate(identity, _yRot  * PI/180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 
-        _modelview *=  rotationX;
+    _modelview *=  rotationX;
 
 	//uniform variables
 	glUniform1f(glGetUniformLocation(_programMesh, "r"), r);
@@ -182,9 +194,8 @@ void SceneShader::renderMesh()
 	glUniform3fv(glGetUniformLocation(_programMesh, "lightPosition"), 1, glm::value_ptr(lightPosition) );
 
 	glDrawElements( GL_TRIANGLES, _mesh->faces.size()*3, GL_UNSIGNED_INT, 0 );
-	
-	glBindTexture(_programMesh, 0);
 
+    _texture.unbind2DTexture();
 	glBindVertexArray(0);
 }
 

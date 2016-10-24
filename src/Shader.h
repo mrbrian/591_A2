@@ -10,11 +10,11 @@ class Shader
 public:
     Shader();
 
-    virtual void startup () = 0;
+    virtual void startup (std::string model, std::string texture) = 0;
 
     virtual void shutdown () = 0;
 
-    virtual void createVertexBuffer() = 0;
+    virtual void createVertexBuffer( std::string model, std::string texture ) = 0;
 
     virtual void render() = 0;
 

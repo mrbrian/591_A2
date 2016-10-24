@@ -17,11 +17,40 @@ GLFWwindow* window;
 
 SceneShader shader;
 
+std::string models[] = {
+    "./models/bunny.ply",
+    "./models/dragon.ply"
+};
+
+std::string textures[] = {
+    /*
+    "./textures-256-256/aerial-persp-fig9/fig-9b.png",
+    "./textures-256-256/aerial-persp-fig9/fig-9c.png",
+    "./textures-256-256/aerial-persp-fig9/fig-9e.png",
+    "./textures-256-256/aerial-persp-fig9/fig-9f.png",
+
+    "./textures-256-256/depth-field-fig8/fig-8a.png",
+    "./textures-256-256/depth-field-fig8/fig-8b.png",*/
+
+    "./textures-256-256/material-fig11/fig-11b.png",
+    "./textures-256-256/material-fig11/fig-11c.png",
+    "./textures-256-256/material-fig11/fig-11d.png",
+
+    "./textures-256-256/silh-bcklig-fig10/fig-10b.png",
+    "./textures-256-256/silh-bcklig-fig10/fig-10c.png",
+    "./textures-256-256/silh-bcklig-fig10/fig-10d.png",
+
+    "./textures-256-256/toon-fig7/fig-7b.png",
+    "./textures-256-256/toon-fig7/fig-7c.png",
+    "./textures-256-256/toon-fig7/fig-7d.png"
+};
+
+int modelIdx = 0;
+int textureIdx = 2;
+
 void keyboard( unsigned char key, int x, int y )
 {
-	float factor = 0.05f;
-
-	float value = -1;
+    float factor = 0.05f;
 	
 	switch (key)
 	{
@@ -52,14 +81,25 @@ void keyboard( unsigned char key, int x, int y )
 			shader.updateLightPositionZ(factor);				
 			break;			
 		case (GLFW_KEY_1):
-		case (GLFW_KEY_2):
-			value = shader.r;	// initialize to shader value 
-			break;
-/*		case (GLFW_KEY_3):
-		case (GLFW_KEY_4):
-			value = shader.y;
-			break;
-		case (GLFW_KEY_5):
+        case (GLFW_KEY_2):
+            modelIdx = key - GLFW_KEY_1;
+            shader.updateModel(models[modelIdx]);
+            break;
+    case (GLFW_KEY_3):
+        textureIdx--;
+        shader.updateTexture(textures[textureIdx]);
+        break;
+    case (GLFW_KEY_4):
+        textureIdx++;
+        shader.updateTexture(textures[textureIdx]);
+        break;
+    case (GLFW_KEY_9):
+        shader.r -= 0.1;
+        break;
+    case (GLFW_KEY_0):
+        shader.r += 0.1;
+        break;
+/*		case (GLFW_KEY_5):
 		case (GLFW_KEY_6):
 			value = shader.alpha;
 			break;
@@ -82,6 +122,7 @@ void keyboard( unsigned char key, int x, int y )
 		default:
 			break;
 	}
+    /*
 	switch (key)
 	{
 		case (GLFW_KEY_1):
@@ -103,13 +144,13 @@ void keyboard( unsigned char key, int x, int y )
 	}
 	
 	switch (key)	// assign the new value to the correct variable
-	{	
+    {
 		case (GLFW_KEY_1):
 		case (GLFW_KEY_2):
 			shader.r = value;
 			printf("r value: %f\n", shader.r);
 			break;
-		/*case (GLFW_KEY_3):
+        case (GLFW_KEY_3):
 		case (GLFW_KEY_4):
 			shader.y = value;
 			printf("y value: %f\n", shader.y);
@@ -138,10 +179,11 @@ void keyboard( unsigned char key, int x, int y )
 		case (GLFW_KEY_P):
 			shader.gc = value;
 			printf("gc value: %f\n", shader.gc);
-			break;*/
+            break;
 		default:
 			break;	
 	}
+    */
 }
 
 
@@ -248,7 +290,7 @@ void startGlew( )
 	printf("GLSL version supported %s\n", glslVersion);
 	printf("GL version major, minor: %i.%i\n", major, minor);
 
-	shader.startup();
+    shader.startup(models[0], textures[textureIdx]);
 }
 
 int main( int argc, char**argv )

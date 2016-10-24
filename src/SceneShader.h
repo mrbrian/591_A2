@@ -27,7 +27,7 @@ public:
 	SceneShader();
 	~SceneShader();
 
-	void startup ();
+    void startup (std::string model, std::string texture);
 	void shutdown ();
 	void render();
 
@@ -44,14 +44,16 @@ public:
 	void updateLightPositionY( float y );
 	void updateLightPositionZ( float z );
 
-	float r = 0.4;
+    float r = 0.4;
+    void updateTexture( std::string texture_name );
+    void updateModel( std::string model_name );
+    void createVertexBuffer( std::string model_name, std::string texture_name );
 	
 private:
 
 	/*methods*/
 
-	void readMesh( std::string filename );
-	void createVertexBuffer();
+    void readMesh( std::string filename );
 
 
 	/*variables*/
@@ -78,9 +80,8 @@ private:
 	float _yRot;
 	float _aspectRatio;
 
-	/* Textures */
-	GLuint _textureID;
-	GLuint _texture2Did;
+    /* Textures */
+    GLuint _texture2Did;
     Texture _texture;
 
 	/*vertices*/	
