@@ -99,91 +99,9 @@ void keyboard( unsigned char key, int x, int y )
     case (GLFW_KEY_0):
         shader.r += 0.1;
         break;
-/*		case (GLFW_KEY_5):
-		case (GLFW_KEY_6):
-			value = shader.alpha;
-			break;
-		case (GLFW_KEY_7):
-		case (GLFW_KEY_8):
-			value = shader.beta;
-			break;;
-		case (GLFW_KEY_9):
-		case (GLFW_KEY_0):
-			value = shader.rc;
-			break;
-		case (GLFW_KEY_U):
-		case (GLFW_KEY_I):
-			value = shader.bc;
-			break;
-		case (GLFW_KEY_O):
-		case (GLFW_KEY_P):
-			value = shader.gc;
-			break;*/
-		default:
-			break;
-	}
-    /*
-	switch (key)
-	{
-		case (GLFW_KEY_1):
-		case (GLFW_KEY_3):
-		case (GLFW_KEY_5):
-		case (GLFW_KEY_7):
-		case (GLFW_KEY_9):
-		case (GLFW_KEY_U):
-		case (GLFW_KEY_O):
-			value -= 0.01;		
-			if (value < 0)		// perform clamping on the new value
-				value = 0;
-			break;
-		default:		
-			value += 0.01;
-			if (value > 1)		// perform clamping on the new value
-				value = 1;
-		break;	
-	}
-	
-	switch (key)	// assign the new value to the correct variable
-    {
-		case (GLFW_KEY_1):
-		case (GLFW_KEY_2):
-			shader.r = value;
-			printf("r value: %f\n", shader.r);
-			break;
-        case (GLFW_KEY_3):
-		case (GLFW_KEY_4):
-			shader.y = value;
-			printf("y value: %f\n", shader.y);
-			break;
-		case (GLFW_KEY_5):
-		case (GLFW_KEY_6):
-			shader.alpha = value;
-			printf("alpha value: %f\n", shader.alpha);
-			break;
-		case (GLFW_KEY_7):
-		case (GLFW_KEY_8):
-			shader.beta = value;
-			printf("beta value: %f\n", shader.beta);
-			break;
-		case (GLFW_KEY_9):
-		case (GLFW_KEY_0):
-			shader.rc = value;
-			printf("rc value: %f\n", shader.rc);
-			break;
-		case (GLFW_KEY_U):
-		case (GLFW_KEY_I):
-			shader.bc = value;
-			printf("bc value: %f\n", shader.bc);
-			break;
-		case (GLFW_KEY_O):
-		case (GLFW_KEY_P):
-			shader.gc = value;
-			printf("gc value: %f\n", shader.gc);
-            break;
-		default:
-			break;	
-	}
-    */
+    default:
+        break;
+    }
 }
 
 

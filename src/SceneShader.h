@@ -87,9 +87,7 @@ private:
 	/*vertices*/	
 	std::vector<unsigned char> _image;
 	unsigned int _imageWidth;
-	unsigned int _imageHeight;
-	
-	std::vector<float> _vertices;
+    unsigned int _imageHeight;
 
 	trimesh::TriMesh* _mesh;
 	std::vector<unsigned int> _triangleIndices;
