@@ -23,15 +23,6 @@ std::string models[] = {
 };
 
 std::string textures[] = {
-    /*
-    "./textures-256-256/aerial-persp-fig9/fig-9b.png",
-    "./textures-256-256/aerial-persp-fig9/fig-9c.png",
-    "./textures-256-256/aerial-persp-fig9/fig-9e.png",
-    "./textures-256-256/aerial-persp-fig9/fig-9f.png",
-
-    "./textures-256-256/depth-field-fig8/fig-8a.png",
-    "./textures-256-256/depth-field-fig8/fig-8b.png",*/
-
     "./textures-256-256/material-fig11/fig-11b.png",
     "./textures-256-256/material-fig11/fig-11c.png",
     "./textures-256-256/material-fig11/fig-11d.png",
@@ -94,10 +85,10 @@ void keyboard( unsigned char key, int x, int y )
         shader.updateTexture(textures[textureIdx]);
         break;
     case (GLFW_KEY_9):
-        shader.r -= 0.1;
+        shader.r -= factor;
         break;
     case (GLFW_KEY_0):
-        shader.r += 0.1;
+        shader.r += factor;
         break;
     default:
         break;
