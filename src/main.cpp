@@ -36,8 +36,9 @@ std::string textures[] = {
     "./textures-256-256/toon-fig7/fig-7d.png"
 };
 
+const int NUM_TEXTURES = 9;
 int modelIdx = 0;
-int textureIdx = 2;
+int textureIdx = 0;
 
 void keyboard( unsigned char key, int x, int y )
 {
@@ -45,44 +46,46 @@ void keyboard( unsigned char key, int x, int y )
 	
 	switch (key)
 	{
-		case (27):
-			exit(EXIT_FAILURE);
-		case (GLFW_KEY_X):
-			rotate_y += 1.0f;
-			break;
-		case (GLFW_KEY_Z):
-			rotate_y -=  1.0f;
-			break;
-		case (GLFW_KEY_A):
-			shader.updateLightPositionX(-factor);
-			break;
-		case (GLFW_KEY_D):
-			shader.updateLightPositionX(factor);
-			break;
-		case (GLFW_KEY_S):
-			shader.updateLightPositionY(-factor);
-			break;
-		case (GLFW_KEY_W):
-			shader.updateLightPositionY(factor);
-			break;
-		case (GLFW_KEY_Q):
-			shader.updateLightPositionZ(-factor);				
-			break;
-		case (GLFW_KEY_E):
-			shader.updateLightPositionZ(factor);				
-			break;			
-		case (GLFW_KEY_1):
-        case (GLFW_KEY_2):
-            modelIdx = key - GLFW_KEY_1;
-            shader.updateModel(models[modelIdx]);
-            break;
+    case (27):
+        exit(EXIT_FAILURE);
+    case (GLFW_KEY_X):
+        rotate_y += 1.0f;
+        break;
+    case (GLFW_KEY_Z):
+        rotate_y -=  1.0f;
+        break;
+    case (GLFW_KEY_A):
+        shader.updateLightPositionX(-factor);
+        break;
+    case (GLFW_KEY_D):
+        shader.updateLightPositionX(factor);
+        break;
+    case (GLFW_KEY_S):
+        shader.updateLightPositionY(-factor);
+        break;
+    case (GLFW_KEY_W):
+        shader.updateLightPositionY(factor);
+        break;
+    case (GLFW_KEY_Q):
+        shader.updateLightPositionZ(-factor);
+        break;
+    case (GLFW_KEY_E):
+        shader.updateLightPositionZ(factor);
+        break;
+    case (GLFW_KEY_1):
+    case (GLFW_KEY_2):
+        modelIdx = key - GLFW_KEY_1;
+        shader.updateModel(models[modelIdx]);   // update the model
+        break;
     case (GLFW_KEY_3):
-        textureIdx--;
-        shader.updateTexture(textures[textureIdx]);
+        if (textureIdx > 0)
+            textureIdx--;
+        shader.updateTexture(textures[textureIdx]); // load the previous texture
         break;
     case (GLFW_KEY_4):
-        textureIdx++;
-        shader.updateTexture(textures[textureIdx]);
+        if (textureIdx < NUM_TEXTURES)
+            textureIdx++;
+        shader.updateTexture(textures[textureIdx]); // load the next texture
         break;
     case (GLFW_KEY_9):
         shader.r -= factor;

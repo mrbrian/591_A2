@@ -28,6 +28,7 @@ SceneShader::SceneShader(): Shader()
 
 void SceneShader::readMesh( std::string filename )
 {
+    // clear the old model data
     if (_mesh)
     {
         _mesh->clear();
