@@ -9,6 +9,25 @@
 static float PI = 3.14159265359;
 
 
+std::string models[] = {
+    "./models/bunny.ply",
+    "./models/dragon.ply"
+};
+
+std::string textures[] = {
+    "./textures-256-256/material-fig11/fig-11b.png",
+    "./textures-256-256/material-fig11/fig-11c.png",
+    "./textures-256-256/material-fig11/fig-11d.png",
+
+    "./textures-256-256/silh-bcklig-fig10/fig-10b.png",
+    "./textures-256-256/silh-bcklig-fig10/fig-10c.png",
+    "./textures-256-256/silh-bcklig-fig10/fig-10d.png",
+
+    "./textures-256-256/toon-fig7/fig-7b.png",
+    "./textures-256-256/toon-fig7/fig-7c.png",
+    "./textures-256-256/toon-fig7/fig-7d.png"
+};
+
 SceneShader::SceneShader(): Shader()
 {
     _programPlane = 0;
@@ -21,8 +40,15 @@ SceneShader::SceneShader(): Shader()
     _aspectRatio = 1.0;
     _xRot = 0.0;
     _yRot = 0.0;
-    lightPosition = glm::vec3(0.5, 0.5, 0.5);
-
+    lightPosition = glm::vec3(0.5, 0.5, 0.5);    
+    _texture2Did = 0;
+    _meshVertexArray = 0;
+    _meshVertexBuffer = 0;
+    _meshNormalBuffer = 0;
+    _meshIndicesBuffer = 0;
+    r = 4;
+    modelIdx = 0;
+    textureIdx = 0;
 }
 
 
@@ -50,14 +76,31 @@ void SceneShader::readMesh( std::string filename )
     }
 }
 
-void SceneShader::updateTexture( std::string texture_name )
+void SceneShader::clearTexture()
 {
+    // clear the old image
+    _image.clear();
+    glDeleteTextures(1, &_texture2Did);
+}
+
+void SceneShader::clearModel()
+{
+    glDeleteBuffers(1, &_meshVertexArray);
+    glDeleteBuffers(1, &_meshVertexBuffer);
+    glDeleteBuffers(1, &_meshNormalBuffer);
+    glDeleteBuffers(1, &_meshIndicesBuffer);
+}
+
+void SceneShader::updateTexture( int idx )
+{
+    textureIdx = idx;
+    std::string texture_name = textures[textureIdx];
     printf("Loading Texture: %s\n", texture_name.c_str());
 
     std::string imageFilename(texture_name);
 
     // clear the old image
-    _image.clear();
+    clearTexture();
 
     //loading image
     unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, imageFilename.c_str());
@@ -70,9 +113,13 @@ void SceneShader::updateTexture( std::string texture_name )
     _texture.unbind2DTexture();
 }
 
-void SceneShader::updateModel( std::string model_name )
+void SceneShader::updateModel( int idx)
 {
+    modelIdx = idx;
+    std::string model_name = models[modelIdx];
     printf("Loading Model: %s\n", model_name.c_str());
+
+    clearModel();
 
     //read and create mesh geometry
     readMesh(model_name); //normalized vertices coordinates
@@ -125,12 +172,12 @@ void SceneShader::createVertexBuffer( std::string model_name, std::string textur
     glBindVertexArray(0);
 
     //read and create mesh geometry
-    updateModel(model_name); //normalized vertices coordinates
-    updateTexture(texture_name);
+    updateModel(modelIdx); //normalized vertices coordinates
+    updateTexture(textureIdx);
 }
 
 
-void SceneShader::startup(std::string model, std::string texture)
+void SceneShader::startup(int mIdx, int tIdx)
 {
     _programPlane = compile_shaders("./shaders/plane.vert", "./shaders/plane.frag");
 
@@ -138,7 +185,7 @@ void SceneShader::startup(std::string model, std::string texture)
 
     _programLight = compile_shaders("./shaders/light.vert", "./shaders/light.frag");
 
-    createVertexBuffer(model, texture);
+    createVertexBuffer(models[mIdx], textures[tIdx]);
 
 }
 
@@ -199,6 +246,17 @@ void SceneShader::renderMesh()
     _modelview *=  rotationX;
 
     //uniform variables
+    if (modelIdx == 1) // dragon
+    {
+        glUniform1f(glGetUniformLocation(_programMesh, "scale"), 1.0);
+        glUniform1f(glGetUniformLocation(_programMesh, "yoff"), 0);
+    }
+    else // bunny
+    {
+        glUniform1f(glGetUniformLocation(_programMesh, "scale"), 4.0);
+        glUniform1f(glGetUniformLocation(_programMesh, "yoff"), -0.42);
+    }
+
     glUniform1f(glGetUniformLocation(_programMesh, "r"), r);
     glUniformMatrix4fv(glGetUniformLocation(_programMesh, "modelview"), 1, GL_FALSE, glm::value_ptr(_modelview));
     glUniformMatrix4fv(glGetUniformLocation(_programMesh, "projection"), 1, GL_FALSE, glm::value_ptr(_projection));

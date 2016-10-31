@@ -27,7 +27,7 @@ public:
 	SceneShader();
 	~SceneShader();
 
-    void startup (std::string model, std::string texture);
+    void startup (int mIdx, int tIdx);
 	void shutdown ();
 	void render();
 
@@ -44,17 +44,21 @@ public:
 	void updateLightPositionY( float y );
 	void updateLightPositionZ( float z );
 
-    float r = 0.4;
-    void updateTexture( std::string texture_name );
-    void updateModel( std::string model_name );
+    float r;
+    void updateTexture( int idx );
+    void updateModel( int idx );
     void createVertexBuffer( std::string model_name, std::string texture_name );
-	
+
+    int modelIdx = 0;
+    int textureIdx = 0;
+
 private:
 
 	/*methods*/
 
     void readMesh( std::string filename );
-
+    void clearTexture();
+    void clearModel();
 
 	/*variables*/
 	GLuint _programLight;

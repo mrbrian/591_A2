@@ -10,7 +10,7 @@ class Shader
 public:
     Shader();
 
-    virtual void startup (std::string model, std::string texture) = 0;
+    virtual void startup (int mIdx, int tIdx) = 0;
 
     virtual void shutdown () = 0;
 

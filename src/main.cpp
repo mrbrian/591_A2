@@ -17,28 +17,7 @@ GLFWwindow* window;
 
 SceneShader shader;
 
-std::string models[] = {
-    "./models/bunny.ply",
-    "./models/dragon.ply"
-};
-
-std::string textures[] = {
-    "./textures-256-256/material-fig11/fig-11b.png",
-    "./textures-256-256/material-fig11/fig-11c.png",
-    "./textures-256-256/material-fig11/fig-11d.png",
-
-    "./textures-256-256/silh-bcklig-fig10/fig-10b.png",
-    "./textures-256-256/silh-bcklig-fig10/fig-10c.png",
-    "./textures-256-256/silh-bcklig-fig10/fig-10d.png",
-
-    "./textures-256-256/toon-fig7/fig-7b.png",
-    "./textures-256-256/toon-fig7/fig-7c.png",
-    "./textures-256-256/toon-fig7/fig-7d.png"
-};
-
 const int NUM_TEXTURES = 9;
-int modelIdx = 0;
-int textureIdx = 0;
 
 void keyboard( unsigned char key, int x, int y )
 {
@@ -74,24 +53,26 @@ void keyboard( unsigned char key, int x, int y )
         break;
     case (GLFW_KEY_1):
     case (GLFW_KEY_2):
-        modelIdx = key - GLFW_KEY_1;
-        shader.updateModel(models[modelIdx]);   // update the model
+        shader.modelIdx = key - GLFW_KEY_1;
+        shader.updateModel(shader.modelIdx);   // update the model
         break;
     case (GLFW_KEY_3):
-        if (textureIdx > 0)
-            textureIdx--;
-        shader.updateTexture(textures[textureIdx]); // load the previous texture
+        if (shader.textureIdx > 0)
+            shader.textureIdx--;
+        shader.updateTexture(shader.textureIdx); // load the previous texture
         break;
     case (GLFW_KEY_4):
-        if (textureIdx < NUM_TEXTURES)
-            textureIdx++;
-        shader.updateTexture(textures[textureIdx]); // load the next texture
+        if (shader.textureIdx < NUM_TEXTURES)
+            shader.textureIdx++;
+        shader.updateTexture(shader.textureIdx); // load the next texture
         break;
     case (GLFW_KEY_9):
         shader.r -= factor;
+        printf("r value: %f\n", shader.r);
         break;
     case (GLFW_KEY_0):
         shader.r += factor;
+        printf("r value: %f\n", shader.r);
         break;
     default:
         break;
@@ -202,7 +183,7 @@ void startGlew( )
 	printf("GLSL version supported %s\n", glslVersion);
 	printf("GL version major, minor: %i.%i\n", major, minor);
 
-    shader.startup(models[0], textures[textureIdx]);
+    shader.startup(0, 0);
 }
 
 int main( int argc, char**argv )
